@@ -71,6 +71,7 @@
   display: inline-flex;
   gap: 12px;
   justify-self: start;
+  min-width: 0;
   text-decoration: none;
 }
 
@@ -1510,6 +1511,7 @@
   font-size: 14px;
   font-weight: 800;
   gap: 8px;
+  min-width: 0;
 }
 
 .booking-form label:nth-of-type(3),
@@ -1524,9 +1526,12 @@
   border-radius: var(--radius-soft);
   color: var(--ink);
   font: 500 16px/1.2 var(--sans);
+  max-width: 100%;
   min-height: 48px;
+  min-width: 0;
   padding: 0 12px;
   transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  width: 100%;
 }
 
 .booking-form input:focus,
@@ -2222,21 +2227,73 @@
 }
 
 @media (max-width: 620px) {
+  .site-header {
+    gap: 9px 12px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    padding: 10px 14px 12px;
+  }
+
+  .brand {
+    grid-column: 1;
+    grid-row: 1;
+    gap: 10px;
+    max-width: 210px;
+  }
+
+  .brand-mark {
+    flex: 0 0 44px;
+  }
+
   .brand strong {
     font-size: 18px;
   }
 
+  .brand small {
+    font-size: 11px;
+    line-height: 1.15;
+    margin-top: 3px;
+  }
+
+  .header-actions {
+    display: contents;
+  }
+
+  .mobile-menu-button {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
   .language-switcher {
-    max-width: 210px;
-    width: auto;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: space-between;
+    justify-self: stretch;
+    max-width: none;
+    overflow: visible;
+    padding: 4px;
+    width: 100%;
+  }
+
+  .language-switcher svg {
+    flex: 0 0 auto;
+    margin-inline: 6px;
   }
 
   .language-switcher button {
-    flex: 0 0 auto;
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 6px;
+  }
+
+  .hero-section {
+    padding-top: 148px;
   }
 
   .hero-copy h1 {
-    font-size: 44px;
+    font-size: clamp(38px, 12vw, 44px);
+    line-height: 0.94;
   }
 
   .mobile-menu-overlay nav a {
@@ -2324,7 +2381,30 @@
 
   .booking-form {
     grid-template-columns: 1fr;
-    padding: 18px;
+    overflow: hidden;
+    padding: 18px 14px;
+  }
+
+  .booking-layout {
+    max-width: 100%;
+  }
+
+  .booking-page {
+    padding: 154px 14px 56px;
+  }
+
+  .booking-page .section-heading.compact {
+    margin-bottom: 28px;
+  }
+
+  .booking-page .section-heading h2 {
+    font-size: clamp(38px, 12vw, 46px);
+    line-height: 1.02;
+  }
+
+  .booking-page .section-heading p {
+    font-size: 17px;
+    line-height: 1.5;
   }
 
   .booking-form label:nth-of-type(3),
