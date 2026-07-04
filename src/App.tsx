@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import type { MotionProps } from 'framer-motion'
 import {
@@ -211,6 +211,10 @@ const privateStaffPath = String(import.meta.env.VITE_RUYUEN_STAFF_PATH || 'equip
   .replace(/\/$/, '')
 const hasRemoteApi = Boolean(import.meta.env.VITE_RUYUEN_API_URL)
 const localDemoAdminPin = import.meta.env.VITE_RUYUEN_DEMO_ADMIN_PIN || '1234'
+const assetPath = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`
+const bookingBackgroundStyle = {
+  '--booking-bg-image': `url("${assetPath('/assets/ruyuen-calligraphy.png')}")`,
+} as CSSProperties
 
 const activityIcons: Record<ActivityId, LucideIcon> = {
   calligraphy: Brush,
@@ -222,8 +226,8 @@ const activityIcons: Record<ActivityId, LucideIcon> = {
 }
 
 const foodVideoSources = [
-  '/assets/videos/food-baozi-hd.mp4',
-  '/assets/videos/food-zongzi-hd.mp4',
+  assetPath('/assets/videos/food-baozi-hd.mp4'),
+  assetPath('/assets/videos/food-zongzi-hd.mp4'),
 ] as const
 
 const getMediaVideos = (media: ActivityMedia) =>
@@ -231,29 +235,29 @@ const getMediaVideos = (media: ActivityMedia) =>
 
 const activityMedia: Record<ActivityId, ActivityMedia> = {
   calligraphy: {
-    image: '/assets/ruyuen-calligraphy.png',
-    video: '/assets/videos/calligraphy-brush-characters-hd.mp4',
+    image: assetPath('/assets/ruyuen-calligraphy.png'),
+    video: assetPath('/assets/videos/calligraphy-brush-characters-hd.mp4'),
   },
   crafts: {
-    image: '/assets/ruyuen-food-crafts.png',
-    video: '/assets/videos/origami-folding.mp4',
+    image: assetPath('/assets/ruyuen-food-crafts.png'),
+    video: assetPath('/assets/videos/origami-folding.mp4'),
   },
   food: {
-    image: '/assets/ruyuen-food-crafts.png',
+    image: assetPath('/assets/ruyuen-food-crafts.png'),
     video: foodVideoSources[0],
     videos: foodVideoSources,
   },
   fortune: {
-    image: '/assets/ruyuen-hero-festival.png',
-    video: '/assets/videos/lanterns-night.mp4',
+    image: assetPath('/assets/ruyuen-hero-festival.png'),
+    video: assetPath('/assets/videos/lanterns-night.mp4'),
   },
   martial: {
-    image: '/assets/ruyuen-hero-festival.png',
-    video: '/assets/videos/shaolin-staff-hd.mp4',
+    image: assetPath('/assets/ruyuen-hero-festival.png'),
+    video: assetPath('/assets/videos/shaolin-staff-hd.mp4'),
   },
   stage: {
-    image: '/assets/ruyuen-hero-festival.png',
-    video: '/assets/videos/lion-dance-performance-hd.mp4',
+    image: assetPath('/assets/ruyuen-hero-festival.png'),
+    video: assetPath('/assets/videos/lion-dance-performance-hd.mp4'),
   },
 }
 
@@ -267,7 +271,7 @@ const heroVisuals = [
       zhHant: '舞龍舞獅',
     },
     poster: activityMedia.stage.image,
-    src: '/assets/videos/lion-dance-performance-hd.mp4',
+    src: assetPath('/assets/videos/lion-dance-performance-hd.mp4'),
   },
   {
     id: 'shaolin-staff',
@@ -278,7 +282,7 @@ const heroVisuals = [
       zhHant: '少林棍法',
     },
     poster: activityMedia.martial.image,
-    src: '/assets/videos/shaolin-staff-hd.mp4',
+    src: assetPath('/assets/videos/shaolin-staff-hd.mp4'),
   },
   {
     id: 'nunchaku',
@@ -289,7 +293,7 @@ const heroVisuals = [
       zhHant: '雙節棍',
     },
     poster: activityMedia.martial.image,
-    src: '/assets/videos/nunchaku-hd.mp4',
+    src: assetPath('/assets/videos/nunchaku-hd.mp4'),
   },
   {
     id: 'festival-food',
@@ -322,7 +326,7 @@ const heroVisuals = [
       zhHant: '毛筆書法',
     },
     poster: activityMedia.calligraphy.image,
-    src: '/assets/videos/calligraphy-brush-characters-hd.mp4',
+    src: assetPath('/assets/videos/calligraphy-brush-characters-hd.mp4'),
   },
 ] as const
 
@@ -391,7 +395,7 @@ const content = {
         tag: 'Taller guiado',
         text:
           'Practica trazos básicos con pincel, tinta y papel. Ideal para llevarte una pieza hecha por ti.',
-        image: '/assets/ruyuen-calligraphy.png',
+        image: assetPath('/assets/ruyuen-calligraphy.png'),
       },
       {
         id: 'fortune',
@@ -406,7 +410,7 @@ const content = {
         tag: 'Puestos de comida',
         text:
           'Baozi, dumplings y pequeños snacks calientes para probar entre talleres y funciones.',
-        image: '/assets/ruyuen-food-crafts.png',
+        image: assetPath('/assets/ruyuen-food-crafts.png'),
       },
       {
         id: 'crafts',
@@ -501,7 +505,7 @@ const content = {
         title: '毛筆書法',
         tag: '引導式工作坊',
         text: '使用毛筆、墨與紙練習基本筆畫，完成一份屬於自己的作品。',
-        image: '/assets/ruyuen-calligraphy.png',
+        image: assetPath('/assets/ruyuen-calligraphy.png'),
       },
       {
         id: 'fortune',
@@ -514,7 +518,7 @@ const content = {
         title: '中國餐點',
         tag: '美食攤位',
         text: '包子、水餃與各式小吃，讓訪客在活動之間品嚐熱騰騰的味道。',
-        image: '/assets/ruyuen-food-crafts.png',
+        image: assetPath('/assets/ruyuen-food-crafts.png'),
       },
       {
         id: 'crafts',
@@ -604,7 +608,7 @@ const content = {
         title: '毛笔书法',
         tag: '引导式工作坊',
         text: '使用毛笔、墨与纸练习基本笔画，完成一份属于自己的作品。',
-        image: '/assets/ruyuen-calligraphy.png',
+        image: assetPath('/assets/ruyuen-calligraphy.png'),
       },
       {
         id: 'fortune',
@@ -617,7 +621,7 @@ const content = {
         title: '中国餐点',
         tag: '美食摊位',
         text: '包子、水饺与各式小吃，让访客在活动之间品尝热腾腾的味道。',
-        image: '/assets/ruyuen-food-crafts.png',
+        image: assetPath('/assets/ruyuen-food-crafts.png'),
       },
       {
         id: 'crafts',
@@ -709,7 +713,7 @@ const content = {
         tag: 'Guided workshop',
         text:
           'Practice brush strokes with ink and paper, then take home a piece made by you.',
-        image: '/assets/ruyuen-calligraphy.png',
+        image: assetPath('/assets/ruyuen-calligraphy.png'),
       },
       {
         id: 'fortune',
@@ -724,7 +728,7 @@ const content = {
         tag: 'Food stalls',
         text:
           'Baozi, dumplings and warm snacks to enjoy between workshops and performances.',
-        image: '/assets/ruyuen-food-crafts.png',
+        image: assetPath('/assets/ruyuen-food-crafts.png'),
       },
       {
         id: 'crafts',
@@ -1603,7 +1607,7 @@ function App() {
                 className="market-video"
                 data-autopause-video="true"
                 key={src}
-                poster="/assets/ruyuen-food-crafts.png"
+                poster={assetPath('/assets/ruyuen-food-crafts.png')}
                 src={src}
               />
             ))}
@@ -1626,7 +1630,11 @@ function App() {
       ) : null}
 
       {route === 'booking' ? (
-      <section className="booking-section booking-page" id="booking">
+      <section
+        className="booking-section booking-page"
+        id="booking"
+        style={bookingBackgroundStyle}
+      >
         <motion.div className="section-heading compact" {...reveal()}>
           <span className="eyebrow">{copy.booking.eyebrow}</span>
           <h2>{ui.bookingPageTitle}</h2>

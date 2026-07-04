@@ -1448,7 +1448,7 @@
     radial-gradient(circle at 8% 0, rgba(var(--celadon-rgb), 0.16), transparent 30%),
     radial-gradient(circle at 92% 18%, rgba(var(--gold-rgb), 0.16), transparent 28%),
     linear-gradient(180deg, rgba(var(--paper-rgb), 0.96), rgba(var(--paper-soft-rgb), 0.94)),
-    url('/assets/ruyuen-calligraphy.png');
+    var(--booking-bg-image);
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
