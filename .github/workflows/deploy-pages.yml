@@ -35,9 +35,6 @@ jobs:
 
       - name: Crear sitio
         run: npm run build
-        env:
-          VITE_RUYUEN_API_URL: ${{ vars.VITE_RUYUEN_API_URL }}
-          VITE_RUYUEN_STAFF_PATH: ${{ vars.VITE_RUYUEN_STAFF_PATH }}
 
       - name: Preparar GitHub Pages
         uses: actions/configure-pages@v5
