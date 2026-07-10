@@ -107,8 +107,9 @@ export async function getPublicContent(): Promise<PublicContent> {
       sessions?: SheetRow[]
     }>('getPublicContent', {})
     if (!response) return fallbackContent
+    const activities = response.activities?.map(normalizeActivity).filter((item) => item.id) || []
     return {
-      activities: response.activities?.map(normalizeActivity).filter((item) => item.id) || fallbackContent.activities,
+      activities: activities.length ? activities : fallbackContent.activities,
       events: response.events?.map(normalizeEvent).filter((item) => item.status !== 'draft') || [],
       notices: response.notices?.map(normalizeNotice).filter((item) => item.active) || [],
       sessions: response.sessions?.map(normalizeSession).filter((item) => item.id) || [],
