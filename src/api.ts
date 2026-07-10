@@ -2,6 +2,7 @@ import { fallbackContent } from './content'
 import { getBookingStatus } from './domain'
 import type {
   Activity,
+  AdminData,
   ApiResult,
   Booking,
   BookingInput,
@@ -148,12 +149,24 @@ export async function createBooking(input: BookingInput): Promise<Booking> {
   return booking
 }
 
-export async function adminLogin(adminPin: string) {
-  const response = await postAction<{ bookings: Booking[] }>('adminListBookings', { adminPin })
-  if (response) return response.bookings || []
+export async function adminLogin(adminPin: string): Promise<AdminData> {
+  const response = await postAction<{
+    activities?: SheetRow[]
+    bookings?: Booking[]
+    events?: SheetRow[]
+    sessions?: SheetRow[]
+  }>('adminListBookings', { adminPin })
+  if (response) {
+    return {
+      activities: response.activities?.map(normalizeActivity).filter((item) => item.id) || [],
+      bookings: response.bookings || [],
+      events: response.events?.map(normalizeEvent).filter((item) => item.id) || [],
+      sessions: response.sessions?.map(normalizeSession).filter((item) => item.id) || [],
+    }
+  }
   const localPin = import.meta.env.VITE_RUYUEN_DEMO_ADMIN_PIN || '1234'
   if (adminPin !== localPin) throw new Error('Invalid PIN')
-  return readStored<Booking>(bookingsKey)
+  return { activities: [], bookings: readStored<Booking>(bookingsKey), events: [], sessions: [] }
 }
 
 export async function updateBookingStatus(

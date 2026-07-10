@@ -87,4 +87,11 @@ export type SubscriberInput = {
 
 export type BookingInput = Omit<Booking, 'checkedInAt' | 'createdAt' | 'id' | 'status'>
 
+export type AdminData = {
+  activities: Activity[]
+  bookings: Booking[]
+  events: RuyuenEvent[]
+  sessions: Session[]
+}
+
 export type ApiResult<T> = T & { error?: string }

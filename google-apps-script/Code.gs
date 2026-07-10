@@ -34,7 +34,12 @@ function doPost(event) {
     if (payload.action === 'createBooking') return json(createBooking(payload.booking));
     if (payload.action === 'adminListBookings') {
       requireAdmin(payload.adminPin);
-      return json({ bookings: readRows(SHEETS.BOOKINGS) });
+      return json({
+        bookings: readRows(SHEETS.BOOKINGS),
+        sessions: readRows(SHEETS.SESSIONS),
+        activities: readRows(SHEETS.ACTIVITIES),
+        events: readRows(SHEETS.EVENTS),
+      });
     }
     if (payload.action === 'adminUpdateBooking') {
       requireAdmin(payload.adminPin);
