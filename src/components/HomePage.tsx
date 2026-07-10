@@ -15,6 +15,7 @@ import { SiteHeader } from './SiteHeader'
 import { SubscribeForm } from './SubscribeForm'
 
 const journeyIcons = [BookOpen, PaintBrush, CookingPot, UsersThree]
+const notifyCta = { en: 'Get notified', es: 'Recibir aviso', pt: 'Receber aviso', zhHant: '接收通知' }
 
 type Props = {
   content: PublicContent
@@ -69,6 +70,11 @@ export function HomePage({ content, locale, onLocaleChange }: Props) {
           <p className="hero-body">{copy.heroBody}</p>
           <div className="hero-actions">
             <a className="primary-button" href="#activities">{copy.discover}<ArrowRight size={20} /></a>
+            {nextEvent?.registrationOpen ? (
+              <a className="secondary-button" href={`#/booking?event=${nextEvent.id}`}>{copy.booking}<ArrowRight size={18} /></a>
+            ) : (
+              <a className="secondary-button" href="#events">{notifyCta[locale]}<ArrowRight size={18} /></a>
+            )}
             <a className="text-link" href="#about">{copy.learnMore}<ArrowRight size={18} /></a>
           </div>
         </div>
