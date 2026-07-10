@@ -176,7 +176,8 @@ export async function adminLogin(adminPin: string): Promise<AdminData> {
       }
     }
   }
-  const localPin = import.meta.env.VITE_RUYUEN_DEMO_ADMIN_PIN || '1234'
+  // El panel de prueba siempre usa esta clave local; no comparte ni consulta la clave real.
+  const localPin = demoMode ? '1234' : (import.meta.env.VITE_RUYUEN_DEMO_ADMIN_PIN || '1234')
   if (adminPin !== localPin) throw new Error('Invalid PIN')
   return demoMode
     ? { activities: demoContent.activities, bookings: readStored<Booking>(bookingsKey), events: demoContent.events, sessions: demoContent.sessions }

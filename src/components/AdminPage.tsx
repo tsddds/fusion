@@ -1,6 +1,7 @@
 import { Camera, CheckCircle, MagnifyingGlass, SignOut, Ticket, Users } from '@phosphor-icons/react'
 import { useMemo, useRef, useState } from 'react'
 import { adminLogin, promoteWaitlist, updateBookingStatus } from '../api'
+import { formatEventDate } from '../domain'
 import type { Activity, Booking, BookingStatus, RuyuenEvent, Session } from '../types'
 
 export function AdminPage() {
@@ -108,6 +109,8 @@ export function AdminPage() {
       waitlistedSeats,
     }
   })
+  const activityName = (activityId: string) => activities.find((activity) => activity.id === activityId)?.title.es || activityId
+  const sessionName = (sessionId: string) => sessions.find((session) => session.id === sessionId)
 
   return (
     <main className="admin-page dashboard-page">
@@ -121,7 +124,7 @@ export function AdminPage() {
           <div><p className="eyebrow">Control de cupos</p><h2 id="capacity-title">Capacidad por horario</h2></div>
           {sessionCapacity.length ? <div className="capacity-grid">{sessionCapacity.map((session) => (
             <article key={session.id}>
-              <p>{session.event}</p><h3>{session.activity}</h3><small>{session.startAt || 'Horario por definir'}</small>
+              <p>{session.event}</p><h3>{session.activity}</h3><time dateTime={session.startAt}>{session.startAt ? formatEventDate(session.startAt, 'es') : 'Horario por definir'}</time>
               <div className="capacity-numbers"><strong>{session.reservedSeats}/{session.capacity}</strong><span>confirmados</span></div>
               <div className="capacity-bar" aria-label={`${session.reservedSeats} de ${session.capacity} cupos confirmados`}><span style={{ width: `${session.capacity ? Math.min((session.reservedSeats / session.capacity) * 100, 100) : 0}%` }} /></div>
               <footer><span>{session.remaining} disponibles</span>{session.waitlistedSeats ? <span>{session.waitlistedSeats} en espera</span> : null}</footer>
@@ -133,7 +136,7 @@ export function AdminPage() {
           {filtered.length ? filtered.map((booking) => (
             <article key={booking.id}>
               <div><strong>{booking.attendee}</strong><span>{booking.id} · {booking.contact}</span></div>
-              <div><strong>{booking.activityId}</strong><span>{booking.sessionId} · {booking.partySize} personas</span></div>
+              <div><strong>{activityName(booking.activityId)}</strong><span>{sessionName(booking.sessionId)?.startAt ? formatEventDate(sessionName(booking.sessionId)!.startAt, 'es') : booking.sessionId} · {booking.partySize} personas</span></div>
               <div className="status-actions"><select onChange={(event) => changeStatus(booking.id, event.target.value as BookingStatus)} value={booking.status}><option value="reserved">Reservado</option><option value="waitlisted">Lista de espera</option><option value="checked-in">Llegó</option><option value="cancelled">Cancelado</option><option value="no-show">No llegó</option><option value="completed">Completado</option></select>{booking.status === 'waitlisted' ? <button onClick={() => promote(booking.id)} type="button">Promover</button> : null}</div>
             </article>
           )) : <div className="admin-empty"><Ticket size={48} /><p>No hay reservas que coincidan.</p></div>}
