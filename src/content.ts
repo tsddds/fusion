@@ -138,6 +138,36 @@ export const fallbackContent: PublicContent = {
   sessions: [],
 }
 
+// Solo se usa durante el desarrollo local para recorrer el flujo completo de reservas.
+// Nunca se incluye como un encuentro publicado en la web pública.
+export const demoContent: PublicContent = {
+  activities,
+  events: [{
+    address: 'Datos de demostración · no corresponde a un evento real',
+    cover: asset('assets/optimized/ruyuen-hero-festival.webp'),
+    endAt: '2027-10-18T18:00:00-03:00',
+    id: 'demo-encuentro-ruyuen',
+    registrationOpen: true,
+    slug: 'demostracion-reservas',
+    startAt: '2027-10-18T11:00:00-03:00',
+    status: 'published',
+    summary: text('Evento de prueba para recorrer el registro, QR y control de cupos. No es una convocatoria real.', '本地測試活動，用於體驗報名、QR 與名額管理。', 'A test event to try registration, QR, and capacity control. Not a real call.', 'Evento de teste para experimentar inscrição, QR e controle de vagas. Não é real.'),
+    title: text('Encuentro de demostración', '示範文化聚會', 'Demo cultural gathering', 'Encontro de demonstração'),
+    venue: text('Espacio de prueba Ruyuen', 'Ruyuen 測試空間', 'Ruyuen test space', 'Espaço de teste Ruyuen'),
+  }],
+  notices: [{
+    active: true,
+    body: text('Estás viendo datos ficticios para probar el sistema. Nada de esta información se publicará ni se guardará en la planilla.', '您正在查看測試資料；這些資訊不會發布或寫入試算表。', 'You are viewing sample data for testing. Nothing here is published or stored in the spreadsheet.', 'Você está vendo dados de teste. Nada será publicado nem salvo na planilha.'),
+    id: 'local-demo',
+    priority: 'high',
+    title: text('Modo de prueba local', '本機測試模式', 'Local test mode', 'Modo de teste local'),
+  }],
+  sessions: [
+    { activityId: 'calligraphy', capacity: 4, endAt: '2027-10-18T12:00:00-03:00', eventId: 'demo-encuentro-ruyuen', id: 'demo-caligrafia-1100', startAt: '2027-10-18T11:00:00-03:00', status: 'open' },
+    { activityId: 'martial-arts', capacity: 8, endAt: '2027-10-18T13:00:00-03:00', eventId: 'demo-encuentro-ruyuen', id: 'demo-artes-marciales-1200', startAt: '2027-10-18T12:00:00-03:00', status: 'open' },
+  ],
+}
+
 export const languageOptions: Array<{ code: Locale; label: string; short: string }> = [
   { code: 'es', label: 'Español', short: 'ES' },
   { code: 'zhHant', label: '繁體中文', short: '繁' },

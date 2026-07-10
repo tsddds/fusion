@@ -1,4 +1,4 @@
-import { fallbackContent } from './content'
+import { demoContent, fallbackContent } from './content'
 import { getBookingStatus } from './domain'
 import type {
   Activity,
@@ -16,6 +16,7 @@ import type {
 } from './types'
 
 const apiUrl = import.meta.env.VITE_RUYUEN_API_URL as string | undefined
+const demoMode = import.meta.env.DEV
 const bookingsKey = 'ruyuen-bookings-v2'
 const subscribersKey = 'ruyuen-subscribers-v2'
 
@@ -100,6 +101,7 @@ function normalizeNotice(row: SheetRow): Notice {
 }
 
 export async function getPublicContent(): Promise<PublicContent> {
+  if (demoMode) return demoContent
   try {
     const response = await postAction<{
       activities?: SheetRow[]
@@ -121,16 +123,20 @@ export async function getPublicContent(): Promise<PublicContent> {
 }
 
 export async function subscribe(input: SubscriberInput) {
-  const response = await postAction<{ ok: boolean }>('subscribe', { subscriber: input })
-  if (response) return response
+  if (!demoMode) {
+    const response = await postAction<{ ok: boolean }>('subscribe', { subscriber: input })
+    if (response) return response
+  }
   const current = readStored<SubscriberInput>(subscribersKey)
   writeStored(subscribersKey, [...current, input])
   return { ok: true }
 }
 
 export async function createBooking(input: BookingInput): Promise<Booking> {
-  const response = await postAction<{ booking: Booking }>('createBooking', { booking: input })
-  if (response?.booking) return response.booking
+  if (!demoMode) {
+    const response = await postAction<{ booking: Booking }>('createBooking', { booking: input })
+    if (response?.booking) return response.booking
+  }
 
   const current = readStored<Booking>(bookingsKey)
   const sessionBookings = current.filter(
@@ -143,30 +149,38 @@ export async function createBooking(input: BookingInput): Promise<Booking> {
     ...input,
     createdAt: new Date().toISOString(),
     id: `RY-${Date.now().toString(36).toUpperCase()}`,
-    status: getBookingStatus(reservedSeats, Number.MAX_SAFE_INTEGER, input.partySize),
+    status: getBookingStatus(
+      reservedSeats,
+      demoMode ? (demoContent.sessions.find((session) => session.id === input.sessionId)?.capacity || 0) : Number.MAX_SAFE_INTEGER,
+      input.partySize,
+    ),
   }
   writeStored(bookingsKey, [...current, booking])
   return booking
 }
 
 export async function adminLogin(adminPin: string): Promise<AdminData> {
-  const response = await postAction<{
-    activities?: SheetRow[]
-    bookings?: Booking[]
-    events?: SheetRow[]
-    sessions?: SheetRow[]
-  }>('adminListBookings', { adminPin })
-  if (response) {
-    return {
-      activities: response.activities?.map(normalizeActivity).filter((item) => item.id) || [],
-      bookings: response.bookings || [],
-      events: response.events?.map(normalizeEvent).filter((item) => item.id) || [],
-      sessions: response.sessions?.map(normalizeSession).filter((item) => item.id) || [],
+  if (!demoMode) {
+    const response = await postAction<{
+      activities?: SheetRow[]
+      bookings?: Booking[]
+      events?: SheetRow[]
+      sessions?: SheetRow[]
+    }>('adminListBookings', { adminPin })
+    if (response) {
+      return {
+        activities: response.activities?.map(normalizeActivity).filter((item) => item.id) || [],
+        bookings: response.bookings || [],
+        events: response.events?.map(normalizeEvent).filter((item) => item.id) || [],
+        sessions: response.sessions?.map(normalizeSession).filter((item) => item.id) || [],
+      }
     }
   }
   const localPin = import.meta.env.VITE_RUYUEN_DEMO_ADMIN_PIN || '1234'
   if (adminPin !== localPin) throw new Error('Invalid PIN')
-  return { activities: [], bookings: readStored<Booking>(bookingsKey), events: [], sessions: [] }
+  return demoMode
+    ? { activities: demoContent.activities, bookings: readStored<Booking>(bookingsKey), events: demoContent.events, sessions: demoContent.sessions }
+    : { activities: [], bookings: readStored<Booking>(bookingsKey), events: [], sessions: [] }
 }
 
 export async function updateBookingStatus(
@@ -174,13 +188,15 @@ export async function updateBookingStatus(
   bookingId: string,
   status: BookingStatus,
 ) {
-  const response = await postAction<{ ok: boolean }>('adminUpdateBooking', {
-    adminPin,
-    bookingId,
-    checkedInAt: status === 'checked-in' ? new Date().toISOString() : '',
-    status,
-  })
-  if (response) return response
+  if (!demoMode) {
+    const response = await postAction<{ ok: boolean }>('adminUpdateBooking', {
+      adminPin,
+      bookingId,
+      checkedInAt: status === 'checked-in' ? new Date().toISOString() : '',
+      status,
+    })
+    if (response) return response
+  }
   const current = readStored<Booking>(bookingsKey)
   writeStored(
     bookingsKey,
@@ -194,11 +210,13 @@ export async function updateBookingStatus(
 }
 
 export async function promoteWaitlist(adminPin: string, bookingId: string) {
-  const response = await postAction<{ booking?: Booking; ok: boolean }>('adminPromoteWaitlist', {
-    adminPin,
-    bookingId,
-  })
-  if (response) return response
+  if (!demoMode) {
+    const response = await postAction<{ booking?: Booking; ok: boolean }>('adminPromoteWaitlist', {
+      adminPin,
+      bookingId,
+    })
+    if (response) return response
+  }
   return updateBookingStatus(adminPin, bookingId, 'reserved')
 }
 
